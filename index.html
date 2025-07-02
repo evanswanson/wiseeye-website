@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WiseEye.ai - AI-Powered Negotiation for eBay Sellers</title>
+    <meta name="description" content="Boost your eBay sales with AI-powered negotiation assistance. Get better prices, faster deals, and professional messaging.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><g fill='%23111827'><path d='M40 80c0-40 30-60 60-60s60 20 60 60c0 15-8 30-20 40l-40-30-40 30c-12-10-20-25-20-40z'/><path d='M70 95c12 0 22-10 22-22s-10-22-22-22-22 10-22 22 10 22 22 22z'/><path d='M130 95c12 0 22-10 22-22s-10-22-22-22-22 10-22 22 10 22 22 22z'/><circle cx='70' cy='73' r='10' fill='white'/><circle cx='130' cy='73' r='10' fill='white'/><circle cx='70' cy='69' r='4' fill='%23111827'/><circle cx='130' cy='69' r='4' fill='%23111827'/></g></svg>">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background: #ffffff;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* Shared button styles */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary { background: #3b82f6; color: white; }
+        .btn-primary:hover { background: #2563eb; transform: translateY(-1px); }
+        
+        .btn-secondary { background: #f9fafb; color: #1f2937; border: 1px solid #e5e7eb; }
+        .btn-secondary:hover { background: #f3f4f6; transform: translateY(-1px); }
+
+        /* Logo component */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: url('icons/Logo48.png') center/contain no-repeat;
+            flex-shrink: 0;
+        }
+
+        /* Header */
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 120px 0 60px;
+            text-align: center;
+            background: #f9fafb;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #111827;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #6b7280;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons { 
+            display: flex; 
+            gap: 1rem; 
+            justify-content: center; 
+            flex-wrap: wrap; 
+            margin-bottom: 3rem; 
+        }
+
+        /* Stats */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 16px;
+            border: 1px solid #e5e7eb;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .stat-number {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #3b82f6;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        /* Features Section */
+        .features {
+            background: #ffffff;
+            padding: 60px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 3rem;
+            color: #111827;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            transition: transform 0.2s ease;
+        }
+
+        .feature-card:hover { transform: translateY(-2px); }
+
+        .feature-icon { font-size: 2rem; margin-bottom: 1rem; display: block; }
+        .feature-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; color: #111827; }
+        .feature-description { color: #6b7280; font-size: 14px; }
+
+        /* Demo Section */
+        .demo {
+            background: #f9fafb;
+            padding: 60px 0;
+        }
+
+        .demo-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .demo h2 { font-size: 2rem; font-weight: 600; margin-bottom: 1rem; color: #111827; }
+        .demo p { color: #6b7280; margin-bottom: 2rem; }
+
+        /* Popup mockup using existing CSS structure */
+        .popup-container {
+            width: 300px;
+            font-family: inherit;
+            background: #ffffff;
+            color: #1f2937;
+            padding: 10px 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin: 0 auto;
+        }
+
+        .header-mockup {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .logo-mockup {
+            width: 48px;
+            height: 48px;
+            background: url('icons/Logo48.png') center/contain no-repeat;
+            flex-shrink: 0;
+        }
+
+        .mockup-title { font-size: 16px; font-weight: 600; color: #111827; }
+        .mockup-subtitle { font-size: 11px; color: #6b7280; }
+
+        .status {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .status-icon {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #10b981;
+            margin-top: 4px;
+            flex-shrink: 0;
+        }
+
+        .status-text { font-weight: 500; font-size: 14px; margin-bottom: 4px; color: #111827; }
+        .status-detail { font-size: 12px; color: #6b7280; }
+
+        /* CTA Section */
+        .cta {
+            background: #1f2937;
+            padding: 60px 0;
+            text-align: center;
+            color: white;
+        }
+
+        .cta h2 { font-size: 2rem; font-weight: 600; margin-bottom: 1rem; }
+        .cta p { color: #d1d5db; margin-bottom: 2rem; }
+
+        /* Footer */
+        footer {
+            background: #111827;
+            color: #9ca3af;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        /* Strategy Section */
+        .strategy {
+            background: #ffffff;
+            padding: 60px 0;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .strategy-content {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .strategy-text {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+            color: #6b7280;
+            line-height: 1.7;
+        }
+
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .strategy-card {
+            background: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+            transition: transform 0.2s ease;
+        }
+
+        .strategy-card:hover { transform: translateY(-2px); }
+
+        .strategy-card h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #111827;
+        }
+
+        .strategy-card p {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        /* Multi-Attribute Section */
+        .multi-attribute {
+            background: #f9fafb;
+            padding: 60px 0;
+        }
+
+        .multi-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .multi-text h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #111827;
+        }
+
+        .multi-text p {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .value-creation {
+            background: #ffffff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .value-creation h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #111827;
+        }
+
+        .value-creation ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .value-creation li {
+            padding: 0.5rem 0;
+            font-size: 14px;
+            color: #6b7280;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .value-creation li:last-child { border-bottom: none; }
+
+        .value-creation strong { color: #111827; }
+
+        .multi-demo {
+            display: flex;
+            justify-content: center;
+        }
+
+        .negotiation-example {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .negotiation-example h4 {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #111827;
+        }
+
+        .trade-scenario {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .scenario-before,
+        .scenario-after {
+            padding: 1rem;
+            border-radius: 6px;
+            border: 2px solid;
+        }
+
+        .scenario-before {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .scenario-after {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .scenario-before h5,
+        .scenario-after h5 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .scenario-before h5 { color: #dc2626; }
+        .scenario-after h5 { color: #059669; }
+
+        .scenario-before p,
+        .scenario-after p {
+            font-size: 13px;
+            color: #4b5563;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .scenario-before em,
+        .scenario-after em {
+            display: block;
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+
+
+
+        /* Strategy Slider Styles */
+        .strategy-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e5e7eb;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            margin: 10px 0;
+        }
+
+        .strategy-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .strategy-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .style-controller {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            margin-top: 20px;
+        }
+
+        .style-result {
+            background: #f3f4f6;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 500;
+            margin-top: 15px;
+        }
+
+        /* Navigation Styles */
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #6b7280;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+            padding: 0.5rem 0;
+            border-bottom: 2px solid transparent;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
+            .hero-buttons { flex-direction: column; align-items: center; }
+            .stats { gap: 1.5rem; }
+            .demo-container { grid-template-columns: 1fr; }
+            .popup-container { width: 100%; max-width: 300px; }
+            .multi-content { grid-template-columns: 1fr; gap: 2rem; }
+            .strategy-grid { grid-template-columns: 1fr; }
+            
+            .nav-menu {
+                display: none;
+            }
+            
+            .nav-menu.mobile-open {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                border-top: 1px solid #e5e7eb;
+                padding: 1rem 0;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">
+                <div class="logo-icon"></div>
+                WiseEye.ai
+            </a>
+            <div class="nav-menu" id="nav-menu">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#strategy" class="nav-link">Strategy</a>
+                <a href="#multi-attribute" class="nav-link">Multi-Attribute</a>
+                <a href="#demo" class="nav-link">Demo</a>
+            </div>
+            <button class="mobile-menu-btn" id="mobile-menu-btn">☰</button>
+            <a href="#download" class="btn btn-primary">Get Extension</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>AI-Powered Negotiation for eBay Sellers</h1>
+            <p>Boost your sales with intelligent offer management. Get better prices, faster deals, and professional messaging—all powered by AI.</p>
+            
+            <div class="hero-buttons">
+                <a href="#download" class="btn btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 200 200" fill="white">
+                        <path d="M50 60c0-30 22-40 50-40s50 10 50 40c0 15-5 25-15 35l-35-25-35 25c-10-10-15-20-15-35z"/>
+                        <circle cx="75" cy="62" r="8"/><circle cx="125" cy="62" r="8"/>
+                    </svg>
+                    Download Extension
+                </a>
+                <a href="#demo" class="btn btn-secondary">Watch Demo</a>
+            </div>
+
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-number">+18%</span>
+                    <span class="stat-label">Price Increase</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">89%</span>
+                    <span class="stat-label">Success Rate</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">-40%</span>
+                    <span class="stat-label">Faster Deals</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">Smart Negotiation Features</h2>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">📊</span>
+                    <h3 class="feature-title">Market Analysis</h3>
+                    <p class="feature-description">Real-time comparable sales data and pricing trends.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">💰</span>
+                    <h3 class="feature-title">Smart Pricing</h3>
+                    <p class="feature-description">AI-powered counter-offers with acceptance predictions.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">💬</span>
+                    <h3 class="feature-title">Message Assistant</h3>
+                    <p class="feature-description">Professional messages that maximize value.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">⚡</span>
+                    <h3 class="feature-title">Real-Time</h3>
+                    <p class="feature-description">Instant analysis as offers come in.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Intelligent Strategy Section -->
+    <section class="strategy" id="strategy">
+        <div class="container">
+            <h2 class="section-title">Intelligent Negotiation Strategy</h2>
+            <div class="strategy-content">
+                <div class="strategy-text">
+                    <p>WiseEye.ai employs advanced AI models inspired by game theory and behavioral economics to optimize your negotiation outcomes. Our system analyzes buyer patterns, market dynamics, and historical data to recommend the perfect approach.</p>
+                </div>
+                
+                <div class="strategy-grid">
+                    <div class="strategy-card">
+                        <h4>🎯 Strategic Positioning</h4>
+                        <p>Balances warmth and assertiveness based on counterparty analysis and negotiation context</p>
+                    </div>
+                    <div class="strategy-card">
+                        <h4>📈 Game Theory Application</h4>
+                        <p>Uses Nash Equilibrium principles to find mutually beneficial outcomes that maximize your profit</p>
+                    </div>
+                    <div class="strategy-card">
+                        <h4>🔄 Dynamic Strategy</h4>
+                        <p>Adjusts approach in real-time based on opponent responses and concession patterns</p>
+                    </div>
+                </div>
+
+                <div class="style-controller">
+                    <h4 style="text-align: center; margin-bottom: 20px; color: #111827; font-weight: 600;">Adaptive Communication Style</h4>
+                    <p style="text-align: center; color: #6b7280; margin-bottom: 20px;">Success isn't just about the numbers. The AI must balance different communication styles to build rapport and claim value effectively.</p>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: 500; color: #111827; display: block; margin-bottom: 5px;">Warmth: <span id="warmth-val">Moderate</span></label>
+                        <input type="range" id="warmth-slider" class="strategy-slider" min="0" max="100" value="50">
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: 500; color: #111827; display: block; margin-bottom: 5px;">Assertiveness: <span id="assert-val">Moderate</span></label>
+                        <input type="range" id="assert-slider" class="strategy-slider" min="0" max="100" value="50">
+                    </div>
+                    
+                    <div id="style-result" class="style-result">Balanced & cooperative, aiming for a fair deal.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Multi-Attribute Negotiation Section -->
+    <section class="multi-attribute" id="multi-attribute">
+        <div class="container">
+            <h2 class="section-title">Beyond Price: The Power of Multi-Attribute Negotiation</h2>
+            <div class="multi-content">
+                <div class="multi-text">
+                    <h3>Negotiations aren't just about price</h3>
+                    <p>WiseEye.ai understands that successful eBay negotiations involve multiple factors. Our Multi-Attribute Utility Theory (MAUT) framework helps you optimize across all negotiation dimensions simultaneously.</p>
+                    <div class="value-creation">
+                        <h4>🎪 Value Creation Opportunities:</h4>
+                        <ul>
+                            <li><strong>Shipping Terms:</strong> Free expedited shipping vs. price concessions</li>
+                            <li><strong>Bundle Deals:</strong> Additional items to increase total order value</li>
+                            <li><strong>Payment Terms:</strong> Flexible payment options for higher-value sales</li>
+                            <li><strong>Return Policies:</strong> Extended returns for premium pricing</li>
+                            <li><strong>Timing:</strong> Quick sale discounts vs. market-rate patience</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="multi-demo">
+                    <div class="negotiation-example">
+                        <h4>Example: Smart Trade-off</h4>
+                        <div class="trade-scenario">
+                            <div class="scenario-before">
+                                <h5>❌ Price-Only Negotiation</h5>
+                                <p>Buyer offers: $80 (vs $100 listing)<br>
+                                Seller counters: $90<br>
+                                <em>Result: Stalemate at $5 gap</em></p>
+                            </div>
+                            <div class="scenario-after">
+                                <h5>✅ WiseEye Multi-Attribute</h5>
+                                <p>Seller offers: $85 + free 2-day shipping<br>
+                                Value to buyer: $95 equivalent<br>
+                                <em>Result: Deal closed, higher satisfaction</em></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section class="demo" id="demo">
+        <div class="container">
+            <div class="demo-container">
+                <div class="demo-content">
+                    <h2>See WiseEye in Action</h2>
+                    <p>Our AI agent transforms eBay negotiations with instant analysis and professional guidance.</p>
+                    <a href="#download" class="btn btn-primary">Try It Now</a>
+                </div>
+                
+                <div class="popup-container">
+                    <div class="header-mockup">
+                        <div class="logo-mockup"></div>
+                        <div>
+                            <div class="mockup-title">WiseEye.ai Agent</div>
+                            <div class="mockup-subtitle">Smart negotiation for sellers</div>
+                        </div>
+                    </div>
+                    
+                    <div class="status">
+                        <div class="status-icon"></div>
+                        <div>
+                            <div class="status-text">eBay page detected!</div>
+                            <div class="status-detail">Ready to optimize your negotiations</div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" style="width: 100%;">Launch WiseEye Agent</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta" id="download">
+        <div class="container">
+            <h2>Ready to Transform Your eBay Sales?</h2>
+            <p>Join sellers using AI to negotiate better deals and increase profits.</p>
+            <a href="#" class="btn btn-primary" style="font-size: 1.1rem; padding: 16px 32px;">Download Chrome Extension</a>
+            <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.7;">Free to install • Works with all eBay pages</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 WiseEye.ai. Built for eBay sellers who want to win.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simplified JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle download buttons
+            document.querySelectorAll('a[href="#"]').forEach(btn => {
+                if (btn.textContent.includes('Download')) {
+                    btn.onclick = e => {
+                        e.preventDefault();
+                        alert('Chrome extension coming soon! Contact hello@wiseeye.ai for early access.');
+                    };
+                }
+            });
+
+            // Smooth scroll for valid anchors
+            document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach(anchor => {
+                anchor.onclick = e => {
+                    e.preventDefault();
+                    const targetId = anchor.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                        // Close mobile menu if open
+                        document.getElementById('nav-menu').classList.remove('mobile-open');
+                    }
+                };
+            });
+
+            // Mobile menu toggle
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const navMenu = document.getElementById('nav-menu');
+            
+            if (mobileMenuBtn && navMenu) {
+                mobileMenuBtn.addEventListener('click', () => {
+                    navMenu.classList.toggle('mobile-open');
+                });
+            }
+
+            // Active navigation highlighting
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section[id]');
+            
+            function updateActiveNav() {
+                const scrollPos = window.scrollY + 100;
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.offsetHeight;
+                    const sectionId = section.getAttribute('id');
+                    
+                    if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === `#${sectionId}`) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }
+            
+            window.addEventListener('scroll', updateActiveNav);
+            updateActiveNav(); // Initialize
+
+            // Strategy Style Controller
+            function initializeStrategySliders() {
+                const warmthSlider = document.getElementById('warmth-slider');
+                const assertSlider = document.getElementById('assert-slider');
+                const warmthVal = document.getElementById('warmth-val');
+                const assertVal = document.getElementById('assert-val');
+                const styleResult = document.getElementById('style-result');
+                
+                // Check if all elements exist
+                if (!warmthSlider || !assertSlider || !warmthVal || !assertVal || !styleResult) {
+                    setTimeout(initializeStrategySliders, 100);
+                    return;
+                }
+                
+                function updateStyle() {
+                    const warmth = warmthSlider.value;
+                    const assert = assertSlider.value;
+                    let warmthText, assertText, resultText;
+
+                    if (warmth < 33) warmthText = "Low"; 
+                    else if (warmth < 66) warmthText = "Moderate"; 
+                    else warmthText = "High";
+                    
+                    if (assert < 33) assertText = "Low"; 
+                    else if (assert < 66) assertText = "Moderate"; 
+                    else assertText = "High";
+
+                    warmthVal.textContent = warmthText;
+                    assertVal.textContent = assertText;
+                    
+                    if(warmth > 60 && assert < 40) {
+                        resultText = "Friendly & Accommodating: Builds rapport, prioritizes the deal over value.";
+                    } else if(warmth > 60 && assert > 60) {
+                        resultText = "Warm but Firm: Aims for a win-win but clearly states needs.";
+                    } else if(warmth < 40 && assert > 60) {
+                        resultText = "Tough & Direct: Prioritizes claiming maximum value, less focus on rapport.";
+                    } else if(warmth < 40 && assert < 40) {
+                        resultText = "Passive & Cautious: Avoids conflict, may concede too easily.";
+                    } else {
+                        resultText = "Balanced & Cooperative: Aims for a fair, efficient deal for both parties.";
+                    }
+                    
+                    styleResult.textContent = resultText;
+                }
+                
+                // Add event listeners
+                warmthSlider.addEventListener('input', updateStyle);
+                assertSlider.addEventListener('input', updateStyle);
+                
+                // Initialize with default values
+                updateStyle();
+            }
+            
+            // Initialize strategy sliders
+            initializeStrategySliders();
+        });
+    </script>
+</body>
+</html>
